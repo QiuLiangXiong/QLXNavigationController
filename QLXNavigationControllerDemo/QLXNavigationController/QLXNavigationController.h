@@ -11,6 +11,11 @@
 
 @interface QLXNavigationController : UINavigationController
 
+/**
+ *  qlx_topViewContrller代替 UINavigationController 的 topViewContrller
+ */
+@property(nonatomic , strong) UIViewController * qlx_topViewContrller;
+
 @end
 
 
