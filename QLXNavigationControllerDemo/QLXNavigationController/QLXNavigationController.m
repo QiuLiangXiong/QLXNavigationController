@@ -91,7 +91,7 @@
     if (self.rootNavigationContrller) {
         [self.rootNavigationContrller pushViewController:viewController animated:animated];
     }else {
-        if (self.viewControllers.count > 0) {// 配置默认返回按钮
+        if (self.childViewControllers.count > 0) {// 配置默认返回按钮
             [self configDefaultLeftBarItemWithViewContrller:viewController];
         }
         [super pushViewController:[self wrapNavigationControlerWithViewController:viewController] animated:animated];
@@ -115,7 +115,7 @@
         if ([wrapViewContrller isMemberOfClass:[QLXWrapViewController class]]) {
             viewController = wrapViewContrller;
         }
-        if (![self.viewControllers containsObject:viewController]) {
+        if (![self.childViewControllers containsObject:viewController]) {
             return nil;
         }
         NSArray * contrllers = [super popToViewController:viewController animated:animated];
@@ -134,30 +134,18 @@
 
 - (NSArray<UIViewController *> *)viewControllers{
     if (self.rootNavigationContrller) {
-        if ([super viewControllers].count) {
-            NSArray * controllers = self.rootNavigationContrller.viewControllers;
-            NSMutableArray * viewControllers = [[NSMutableArray alloc] initWithCapacity:controllers.count];
-            for (UIViewController * contrller in controllers) {
-                UIViewController * originContrller = [self debagNavigationControlerWithViewController:contrller];
-                if (originContrller) {
-                    [viewControllers addObject:originContrller];
-                }
-            }
-            return viewControllers;
-        }
+        return self.rootNavigationContrller.viewControllers;
         
     }
-    return [super viewControllers];
+    NSArray * viewContrlllers = [super viewControllers];
+    return [self debagNavigationControlerWithViewControllers:viewContrlllers];
 }
 
 - (UIViewController *)visibleViewController{
     if (self.rootNavigationContrller) {
-        if ([super viewControllers].count){
-            UIViewController * visibleViewController = self.rootNavigationContrller.visibleViewController;
-            return [self debagNavigationControlerWithViewController:visibleViewController];
-        }
+        return self.rootNavigationContrller.visibleViewController;
     }
-    return  [super visibleViewController];
+    return  [self debagNavigationControlerWithViewController:[super visibleViewController]];
 }
 
 
@@ -244,7 +232,7 @@
 - (void) configDefaultLeftBarItemWithViewContrller:(UIViewController *)viewContrlller{
     UIViewController * rootViewController = viewContrlller;
     if ([viewContrlller isKindOfClass:[UINavigationController class]]) {
-        rootViewController = [(UINavigationController *)viewContrlller viewControllers].firstObject;
+        rootViewController = [(UINavigationController *)viewContrlller childViewControllers].firstObject;
         if ([rootViewController isMemberOfClass:[QLXWrapViewController class]]) {
             rootViewController = rootViewController.childViewControllers.firstObject;
             rootViewController = rootViewController.childViewControllers.firstObject;

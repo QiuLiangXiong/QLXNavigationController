@@ -42,10 +42,15 @@
 -(void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
     NSLog(@"%s",__FUNCTION__);
+    
 }
 
 -(void)onBackBtnClick:(UIButton *)sender{
+    NSLog(@"%@",[self.navigationController visibleViewController]);
+    
    NSArray * popedContrllers  = [self.navigationController popToViewController:[self.navigationController.viewControllers firstObject] animated:true];
+    
+    NSLog(@"%@",[self.navigationController visibleViewController]);
     NSLog(@"%@",popedContrllers);
 }
 
