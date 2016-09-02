@@ -260,8 +260,8 @@
     }
     UIViewController * wrapViewController = [QLXWrapViewController new];
     Class navigationControllerClass = [self class];
-    
-    if ([viewControlller isKindOfClass:[QLXNavigationController class]]) {
+    if ([viewControlller isKindOfClass:[UINavigationController class]]) {
+        assert([viewControlller isKindOfClass:[QLXNavigationController class]]);
         QLXNavigationController * navigationController = ((QLXNavigationController *)viewControlller);
         viewControlller =  [self debagNavigationControlerWithViewController:navigationController.childViewControllers.firstObject];
         navigationControllerClass = [navigationController class];
