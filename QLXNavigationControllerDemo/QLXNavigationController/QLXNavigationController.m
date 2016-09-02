@@ -11,11 +11,12 @@
 /**
  *  包装一层所需要的类
  */
+
 @interface QLXWrapViewController : UIViewController
 /**
  *  被包裹的主控制器
  */
-@property(nonatomic , strong)  UIViewController * rootViewController;
+@property (nonatomic , strong) UIViewController * rootViewController;
 
 @end
 
@@ -55,6 +56,10 @@
 
 
 
+//----------------------------我是类分割线----------------------------
+
+
+
 /**
  *  QLXNavigationController
  */
@@ -64,7 +69,7 @@
 /**
  * 包装自己的主导航栏控制器
  */
-@property(nonatomic , weak) QLXNavigationController * rootNavigationContrller;
+@property (nonatomic , weak) QLXNavigationController * rootNavigationContrller;
 
 @end
 
@@ -76,12 +81,13 @@
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
     self = [super init];
     if (self) {
-        self.viewControllers = @[[self wrapNavigationControlerWithViewController:rootViewController]];
+        // 包裹一层带有导航栏控制器的QLXWrapViewController控制器
+        self.viewControllers = @[ [self wrapNavigationControlerWithViewController:rootViewController] ];
     }
     return self;
 }
 
--(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if (self.rootNavigationContrller) {
         [self.rootNavigationContrller pushViewController:viewController animated:animated];
     }else {
@@ -92,7 +98,7 @@
     }
 }
 
--(UIViewController *)popViewControllerAnimated:(BOOL)animated{
+- (UIViewController *)popViewControllerAnimated:(BOOL)animated{
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller popViewControllerAnimated:animated];
     }else {
@@ -101,7 +107,7 @@
     }
 }
 
--(NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated{
+- (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller popToViewController:viewController animated:animated];
     }else {
@@ -117,7 +123,7 @@
     }
 }
 
--(NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated{
+- (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated{
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller popToRootViewControllerAnimated:animated];
     }else {
@@ -126,7 +132,7 @@
     }
 }
 
--(NSArray<UIViewController *> *)viewControllers{
+- (NSArray<UIViewController *> *)viewControllers{
     if (self.rootNavigationContrller) {
         if ([super viewControllers].count) {
             NSArray * controllers = self.rootNavigationContrller.viewControllers;
@@ -144,24 +150,7 @@
     return [super viewControllers];
 }
 
-
--(id<UINavigationControllerDelegate>)delegate{
-    if (self.rootNavigationContrller) {
-        return self.rootNavigationContrller.delegate;
-    }else {
-        return [super delegate];
-    }
-}
-
--(void)setDelegate:(id<UINavigationControllerDelegate>)delegate{
-    if (self.rootNavigationContrller) {
-        [self.rootNavigationContrller setDelegate:delegate];
-    }else {
-        [super setDelegate:delegate];
-    }
-}
-
--(UIViewController *)visibleViewController{
+- (UIViewController *)visibleViewController{
     if (self.rootNavigationContrller) {
         if ([super viewControllers].count){
             UIViewController * visibleViewController = self.rootNavigationContrller.visibleViewController;
@@ -171,21 +160,33 @@
     return  [super visibleViewController];
 }
 
--(UIViewController *)qlx_topViewContrller{
+
+- (id<UINavigationControllerDelegate>)delegate{
     if (self.rootNavigationContrller) {
-        return self.viewControllers.lastObject;
+        return self.rootNavigationContrller.delegate;
+    }else {
+        return [super delegate];
     }
-    return [super topViewController];
 }
 
--(UIGestureRecognizer *)interactivePopGestureRecognizer{
+- (void)setDelegate:(id<UINavigationControllerDelegate>)delegate{
+    if (self.rootNavigationContrller) {
+        [self.rootNavigationContrller setDelegate:delegate];
+    }else {
+        [super setDelegate:delegate];
+    }
+}
+
+
+
+- (UIGestureRecognizer *)interactivePopGestureRecognizer{
     if (self.rootNavigationContrller) {
         return self.rootNavigationContrller.interactivePopGestureRecognizer;
     }
     return [super interactivePopGestureRecognizer];
 }
 
--(BOOL)isToolbarHidden{
+- (BOOL)isToolbarHidden{
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller isToolbarHidden];
     }
@@ -199,7 +200,7 @@
     [super setToolbarHidden:hidden animated:animated];
 }
 
--(UIToolbar *)toolbar{
+- (UIToolbar *)toolbar{
     if (self.rootNavigationContrller) {
         return self.rootNavigationContrller.toolbar;
     }
@@ -207,7 +208,7 @@
 }
 
 
--(void)setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated{
+- (void)setViewControllers:(NSArray<UIViewController *> *)viewControllers animated:(BOOL)animated{
     if (self.rootNavigationContrller) {
         if ([super viewControllers].count) {
             NSMutableArray * contrllers = [[NSMutableArray alloc] initWithCapacity:viewControllers.count];
@@ -226,7 +227,7 @@
 /**
  *  预布局时 把主导航栏本身的导航栏隐藏
  */
--(void)viewWillLayoutSubviews{
+- (void)viewWillLayoutSubviews{
     if (!self.rootNavigationContrller) {
         if (self.navigationBar.hidden == false) {
             self.navigationBar.hidden = true;
@@ -235,12 +236,12 @@
     [super viewWillLayoutSubviews];
 }
 
-#pragma mark - private
+#pragma mark - private (私用)
 
 /**
  *  配置默认返回按钮
  */
--(void) configDefaultLeftBarItemWithViewContrller:(UIViewController *)viewContrlller{
+- (void) configDefaultLeftBarItemWithViewContrller:(UIViewController *)viewContrlller{
     UIViewController * rootViewController = viewContrlller;
     if ([viewContrlller isKindOfClass:[UINavigationController class]]) {
         rootViewController = [(UINavigationController *)viewContrlller viewControllers].firstObject;
@@ -258,14 +259,14 @@
 /**
  *  点击返回按钮回调
  */
--(void) onLeftBarItemClick:(id)sender{
+- (void) onLeftBarItemClick:(id)sender{
     [self popViewControllerAnimated:true];
 }
 
 /**
- * 包裹一个导航栏控制器
+ * 包裹一层带有导航栏控制器的 QLXWrapViewController控制器
  */
--(UIViewController *)wrapNavigationControlerWithViewController:(UIViewController *)viewControlller{
+- (UIViewController *)wrapNavigationControlerWithViewController:(UIViewController *)viewControlller{
     if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {// 已经包过了
         return viewControlller;
     }
@@ -290,7 +291,7 @@
 /**
  *  解包一个被包裹的控制器
  */
--(UIViewController *)debagNavigationControlerWithViewController:(UIViewController *)viewControlller{
+- (UIViewController *)debagNavigationControlerWithViewController:(UIViewController *)viewControlller{
     if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {
         QLXWrapViewController * wrapViewContrller = (QLXWrapViewController *)viewControlller;
         return wrapViewContrller.rootViewController;
@@ -303,7 +304,7 @@
 /**
  *  解包多个被包裹的控制器
  */
--(NSArray<UIViewController *> *)debagNavigationControlerWithViewControllers:(NSArray<UIViewController *> *)viewControlllers{
+- (NSArray<UIViewController *> *)debagNavigationControlerWithViewControllers:(NSArray<UIViewController *> *)viewControlllers{
     if (viewControlllers.count <= 0) {
         return viewControlllers;
     }
