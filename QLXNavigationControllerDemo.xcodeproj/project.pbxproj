@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D79B78D1D79B49C00E92E63 /* QLXNavigationControllerDemo.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2D79B78C1D79B49C00E92E63 /* QLXNavigationControllerDemo.gif */; };
 		2DBFE3B01D77273E00B2989E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBFE3AF1D77273E00B2989E /* main.m */; };
 		2DBFE3B31D77273E00B2989E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBFE3B21D77273E00B2989E /* AppDelegate.m */; };
 		2DBFE3B61D77273E00B2989E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DBFE3B51D77273E00B2989E /* ViewController.m */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D79B78C1D79B49C00E92E63 /* QLXNavigationControllerDemo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = QLXNavigationControllerDemo.gif; sourceTree = "<group>"; };
 		2DBFE3AB1D77273E00B2989E /* QLXNavigationControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QLXNavigationControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2DBFE3AF1D77273E00B2989E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2DBFE3B11D77273E00B2989E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -116,6 +118,7 @@
 		2DBFE3AD1D77273E00B2989E /* QLXNavigationControllerDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2D79B78C1D79B49C00E92E63 /* QLXNavigationControllerDemo.gif */,
 				2DBFE3E11D77281200B2989E /* QLXNavigationController */,
 				2DBFE3B11D77273E00B2989E /* AppDelegate.h */,
 				2DBFE3B21D77273E00B2989E /* AppDelegate.m */,
@@ -277,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DBFE3BE1D77273E00B2989E /* LaunchScreen.storyboard in Resources */,
+				2D79B78D1D79B49C00E92E63 /* QLXNavigationControllerDemo.gif in Resources */,
 				2DBFE3BB1D77273E00B2989E /* Assets.xcassets in Resources */,
 				2DBFE3B91D77273E00B2989E /* Main.storyboard in Resources */,
 			);
