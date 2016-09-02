@@ -8,10 +8,16 @@
 
 #import "QLXNavigationController.h"
 
+/**
+ *  包装一层所需要的类
+ */
 @interface QLXWrapViewController : UIViewController
-@end
-@implementation QLXWrapViewController
 
+@property(nonatomic , strong)  UIViewController * rootViewController;
+
+@end
+
+@implementation QLXWrapViewController
 
 - (BOOL)hidesBottomBarWhenPushed {
     return [self rootViewController].hidesBottomBarWhenPushed;
@@ -35,18 +41,24 @@
 
 - (UIViewController *)rootViewController {
     QLXNavigationController *wrapperNavController = self.childViewControllers.firstObject;
-    QLXNavigationController * temp = [wrapperNavController valueForKey:@"rootNavigationContrller"];
-    [wrapperNavController setValue:nil forKey:@"rootNavigationContrller"];
-    UIViewController * viewController = wrapperNavController.viewControllers.firstObject;
-    [wrapperNavController setValue:temp forKey:@"rootNavigationContrller"];
-    return viewController;
+    return wrapperNavController.childViewControllers.firstObject;
 }
 
 
 @end
 
+
+
+
+/**
+ *  QLXNavigationController
+ */
+
 @interface QLXNavigationController ()
 
+/**
+ * 包装自己的主导航栏控制器
+ */
 @property(nonatomic , weak) QLXNavigationController * rootNavigationContrller;
 
 @end
@@ -63,15 +75,11 @@
 }
 
 
-#pragma mark - overriding
+#pragma mark - overriding 重写
 
 -(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if (self.rootNavigationContrller) {
-        if (!self.viewControllers.count) {
-            [super pushViewController:viewController animated:animated];
-        }else {
-            [self.rootNavigationContrller pushViewController:viewController animated:animated];
-        }
+        [self.rootNavigationContrller pushViewController:viewController animated:animated];
     }else {
         if (self.viewControllers.count > 0) {// 配置默认返回按钮
             [self configDefaultLeftBarItemWithViewContrller:viewController];
@@ -84,7 +92,8 @@
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller popViewControllerAnimated:animated];
     }else {
-        return [super popViewControllerAnimated:animated];
+        UIViewController * popedController = [super popViewControllerAnimated:animated];
+        return [self debagNavigationControlerWithViewController:popedController];
     }
 }
 
@@ -93,18 +102,14 @@
         return [self.rootNavigationContrller popToViewController:viewController animated:animated];
     }else {
         UIViewController * wrapViewContrller = viewController.navigationController.parentViewController;
-        if ([wrapViewContrller.navigationController.parentViewController isMemberOfClass:[QLXWrapViewController class]]) {
-            wrapViewContrller = wrapViewContrller.navigationController.parentViewController;
+        if ([wrapViewContrller isMemberOfClass:[QLXWrapViewController class]]) {
+            viewController = wrapViewContrller;
         }
-        if (![self.viewControllers containsObject:wrapViewContrller]) {
+        if (![self.viewControllers containsObject:viewController]) {
             return nil;
         }
-        if ([wrapViewContrller isMemberOfClass:[QLXWrapViewController class]]) {
-            return [super popToViewController:wrapViewContrller animated:animated];
-        }else {
-            return [super popToViewController:viewController animated:animated];
-        }
-        
+        NSArray * contrllers = [super popToViewController:viewController animated:animated];
+        return [self debagNavigationControlerWithViewControllers:contrllers];
     }
 }
 
@@ -112,7 +117,8 @@
     if (self.rootNavigationContrller) {
         return [self.rootNavigationContrller popToRootViewControllerAnimated:animated];
     }else {
-        return [super popToRootViewControllerAnimated:animated];
+        NSArray * contrllers = [super popToRootViewControllerAnimated:animated];
+        return [self debagNavigationControlerWithViewControllers:contrllers];
     }
 }
 
@@ -157,7 +163,6 @@
             UIViewController * visibleViewController = self.rootNavigationContrller.visibleViewController;
             return [self debagNavigationControlerWithViewController:visibleViewController];
         }
-        
     }
     return  [super visibleViewController];
 }
@@ -254,26 +259,22 @@
  */
 
 -(UIViewController *)wrapNavigationControlerWithViewController:(UIViewController *)viewControlller{
-    if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {// 已经嵌套过了
+    if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {// 已经包过了
         return viewControlller;
     }
     UIViewController * wrapViewController = [QLXWrapViewController new];
-    QLXNavigationController * navigationController ;
+    Class navigationControllerClass = [self class];
+    
     if ([viewControlller isKindOfClass:[QLXNavigationController class]]) {
-        UIViewController * wrapViewController = ((QLXNavigationController *)viewControlller).childViewControllers.firstObject;
-        [wrapViewController removeFromParentViewController];
-        [wrapViewController.view removeFromSuperview];
-        QLXNavigationController * wrapNavigationCotroller = (QLXNavigationController *)wrapViewController.childViewControllers.firstObject;
-        if ([wrapNavigationCotroller isKindOfClass:[QLXNavigationController class]] ) {
-            wrapNavigationCotroller.rootNavigationContrller = self;
-        }
-        return wrapViewController;
-    }else {
-        navigationController = [[self class] new];
-        navigationController.rootNavigationContrller = self;
-        navigationController.viewControllers = @[viewControlller];
-        
+        QLXNavigationController * navigationController = ((QLXNavigationController *)viewControlller);
+        viewControlller =  [self debagNavigationControlerWithViewController:navigationController.childViewControllers.firstObject];
+        navigationControllerClass = [navigationController class];
     }
+    
+    QLXNavigationController * navigationController = [navigationControllerClass new];
+    navigationController.rootNavigationContrller = self;
+    navigationController.viewControllers = @[viewControlller];
+    
     [wrapViewController.view addSubview:navigationController.view];
     [wrapViewController addChildViewController:navigationController];
     return wrapViewController;
@@ -284,20 +285,25 @@
  */
 -(UIViewController *)debagNavigationControlerWithViewController:(UIViewController *)viewControlller{
     if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {
-        UINavigationController * navigationContrller = (UINavigationController *)[viewControlller childViewControllers].firstObject;
-        if ([navigationContrller isKindOfClass:[UINavigationController class]]) {
-            UIViewController * originController = navigationContrller.childViewControllers.firstObject;
-            if ([originController isMemberOfClass:[QLXWrapViewController class]]) {
-                originController = [self debagNavigationControlerWithViewController:originController];
-            }
-            return originController;
-        }
+        QLXWrapViewController * wrapViewContrller = (QLXWrapViewController *)viewControlller;
+        return wrapViewContrller.rootViewController;
     }else {
         return viewControlller;
     }
     return nil;
 }
 
+
+-(NSArray<UIViewController *> *)debagNavigationControlerWithViewControllers:(NSArray<UIViewController *> *)viewControlllers{
+    if (viewControlllers.count <= 0) {
+        return viewControlllers;
+    }
+    NSMutableArray * contrllers = [[NSMutableArray alloc] initWithCapacity:viewControlllers.count];
+    for (UIViewController * contrller  in viewControlllers) {
+        [contrllers addObject:[self debagNavigationControlerWithViewController:contrller]];
+    }
+    return contrllers;
+}
 
 
 @end
