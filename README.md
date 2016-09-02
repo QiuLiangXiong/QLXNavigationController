@@ -8,3 +8,4 @@
 
 Demo效果图：
 
+![](https://github.com/QiuLiangXiong/QLXNavigationContrller/blob/master/QLXNavigationControllerDemo/QLXNavigationControllerDemo.gif)
