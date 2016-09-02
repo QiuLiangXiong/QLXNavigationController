@@ -12,12 +12,16 @@
  *  包装一层所需要的类
  */
 @interface QLXWrapViewController : UIViewController
-
+/**
+ *  被包裹的主控制器
+ */
 @property(nonatomic , strong)  UIViewController * rootViewController;
 
 @end
 
 @implementation QLXWrapViewController
+
+#pragma mark - overriding
 
 - (BOOL)hidesBottomBarWhenPushed {
     return [self rootViewController].hidesBottomBarWhenPushed;
@@ -39,11 +43,12 @@
     return [self rootViewController];
 }
 
+#pragma mark - getter
+
 - (UIViewController *)rootViewController {
     QLXNavigationController *wrapperNavController = self.childViewControllers.firstObject;
     return wrapperNavController.childViewControllers.firstObject;
 }
-
 
 @end
 
@@ -66,6 +71,8 @@
 
 @implementation QLXNavigationController
 
+#pragma mark - overriding 重写
+
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
     self = [super init];
     if (self) {
@@ -73,9 +80,6 @@
     }
     return self;
 }
-
-
-#pragma mark - overriding 重写
 
 -(void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated{
     if (self.rootNavigationContrller) {
@@ -219,7 +223,9 @@
     [super setViewControllers:viewControllers animated:animated];
 }
 
-
+/**
+ *  预布局时 把主导航栏本身的导航栏隐藏
+ */
 -(void)viewWillLayoutSubviews{
     if (!self.rootNavigationContrller) {
         if (self.navigationBar.hidden == false) {
@@ -228,6 +234,8 @@
     }
     [super viewWillLayoutSubviews];
 }
+
+#pragma mark - private
 
 /**
  *  配置默认返回按钮
@@ -257,7 +265,6 @@
 /**
  * 包裹一个导航栏控制器
  */
-
 -(UIViewController *)wrapNavigationControlerWithViewController:(UIViewController *)viewControlller{
     if ([viewControlller isMemberOfClass:[QLXWrapViewController class]]) {// 已经包过了
         return viewControlller;
@@ -293,7 +300,9 @@
     return nil;
 }
 
-
+/**
+ *  解包多个被包裹的控制器
+ */
 -(NSArray<UIViewController *> *)debagNavigationControlerWithViewControllers:(NSArray<UIViewController *> *)viewControlllers{
     if (viewControlllers.count <= 0) {
         return viewControlllers;
