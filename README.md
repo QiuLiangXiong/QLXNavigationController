@@ -10,8 +10,8 @@
 _在podfile文件中加入_ `pod 'QLXNavigationController', '~> 1.0.0'` _或_ `pod "QLXNavigationController"`
 <br />_使用_ `pod install`_即可一键引入_
 # QLXNavigationController
- 用法和 UINavigationController 完全一致 可以当做UINavigationController
- 
+ 用法和 UINavigationController 完全一致 可以当做UINavigationController <br>
+ 最低支持iOS7.0<br>
  1.QLXNavigationController 解决了不同导航栏背景不一致带来的过度效果不佳问题。  
  
  2.支持push一个导航栏控制器。
