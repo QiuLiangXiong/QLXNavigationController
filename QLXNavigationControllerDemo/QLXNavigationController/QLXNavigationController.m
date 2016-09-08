@@ -206,7 +206,7 @@
                     [contrllers addObject:warpContrller];
                 }
             }
-            [self.rootNavigationContrller setViewControllers:contrllers animated:animated];
+            return [self.rootNavigationContrller setViewControllers:contrllers animated:animated];
         }
     }
     [super setViewControllers:viewControllers animated:animated];
