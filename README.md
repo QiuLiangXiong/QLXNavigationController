@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://mit-license.org)
 ![CocoaPods Version](https://img.shields.io/badge/pod-v1.0.0-brightgreen.svg)
 
-####本库已经配置到cocoapods。
+本库已经配置到cocoapods。
 _在podfile文件中加入_ `pod 'QLXNavigationController', '~> 1.1.0'` _或_ `pod "QLXNavigationController"`
 <br />_使用_ `pod install`_即可一键引入_
 # QLXNavigationController
